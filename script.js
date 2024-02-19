@@ -18,14 +18,14 @@
 // 6. Now it's time to use the received data to render a country. So take the relevant attribute from the geocoding API result, and plug it into the countries API that we have been using.
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
-
+const apiKey = '389071105374065544409x88138'
 ///////////////////////////////////////
 const renderCountries = function (data, className = '') {
   let currencies = Object.values(data.currencies)[0];
   let langugae = Object.values(data.languages)
     .toString()
-    // .split(',')
-    // .slice(0,2).join(',');
+  // .split(',')
+  // .slice(0,2).join(',');
 
   const html = `
     <article class="country ${className}">
@@ -52,8 +52,8 @@ const whereAmIByCity = function (city) {
     .then(response => response.json())
     .then(data => fetch(`https://geocode.xyz/${data.latt},${data.longt}?geoit=json&auth=389071105374065544409x88138`))
     .then(response => {
-      if(response.status === 403) throw new Error(`횟수 초과`);
-      if(!response.ok) throw new Error(`${response.status}`);
+      if (response.status === 403) throw new Error(`횟수 초과`);
+      if (!response.ok) throw new Error(`${response.status}`);
       return response.json();
     })
     .then(data => {
@@ -62,7 +62,7 @@ const whereAmIByCity = function (city) {
     })
     .then(data => fetch(`https://restcountries.com/v3.1/name/${data.country}`))
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => {
@@ -74,7 +74,7 @@ const whereAmIByCity = function (city) {
       return fetch(`https://restcountries.com/v3.1/alpha?codes=${neighbour}`)
     })
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => data.forEach(d => renderCountries(d, 'neighbour')))
@@ -88,8 +88,8 @@ const whereAmIByCity = function (city) {
 const whereAmIByLatLng = function (lat, lng) {
   fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=389071105374065544409x88138`)
     .then(response => {
-      if(response.status === 403) throw new Error(`횟수 초과`);
-      if(!response.ok) throw new Error(`${response.status}`);
+      if (response.status === 403) throw new Error(`횟수 초과`);
+      if (!response.ok) throw new Error(`${response.status}`);
       return response.json();
     })
     .then(data => {
@@ -97,7 +97,7 @@ const whereAmIByLatLng = function (lat, lng) {
       return fetch(`https://restcountries.com/v3.1/name/${data.country}`)
     })
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => {
@@ -109,7 +109,7 @@ const whereAmIByLatLng = function (lat, lng) {
       return fetch(`https://restcountries.com/v3.1/alpha?codes=${neighbour}`)
     })
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => data.forEach(d => renderCountries(d, 'neighbour')))
@@ -130,11 +130,11 @@ const getLocation = function () {
 const whereAmIByLocation = function () {
   getLocation().then(res => {
     const {latitude: lat, longitude: lng} = res.coords;
-    return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=389071105374065544409x88138`)
+    return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=${apiKey}`)
   })
     .then(response => {
-      if(response.status === 403) throw new Error(`횟수 초과`);
-      if(!response.ok) throw new Error(`${response.status}`);
+      if (response.status === 403) throw new Error(`횟수 초과`);
+      if (!response.ok) throw new Error(`${response.status}`);
       return response.json();
     })
     .then(data => {
@@ -142,7 +142,7 @@ const whereAmIByLocation = function () {
       return fetch(`https://restcountries.com/v3.1/name/${data.country}`)
     })
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => {
@@ -154,7 +154,7 @@ const whereAmIByLocation = function () {
       return fetch(`https://restcountries.com/v3.1/alpha?codes=${neighbour}`)
     })
     .then(response => {
-      if (!response.ok)  throw Error(`${response.status} ==> 나라 찾기`)
+      if (!response.ok) throw Error(`${response.status} ==> 나라 찾기`)
       return response.json()
     })
     .then(data => data.forEach(d => renderCountries(d, 'neighbour')))
@@ -164,8 +164,6 @@ const whereAmIByLocation = function () {
     })
     .finally(() => countriesContainer.style.opacity = 1)
 };
-
-
 
 // fetch('https://geocode.xyz/Hauptstr.,+57632+Berzhausen?json=1&auth=389071105374065544409x88138')
 // fetch('https://geocode.xyz/seoul?json=1&auth=389071105374065544409x88138')
@@ -181,7 +179,6 @@ const whereAmIByLocation = function () {
 
 ///////////////////////////////////////
 // Coding Challenge #2
-
 /*
 Build the image loading functionality that I just showed you on the screen.
 
@@ -248,20 +245,69 @@ createImage('/img/img-1.jpg')
     container2.insertAdjacentText('beforeend', err)
   })*/
 
-const whereAmIAsync = async function(country){
-  await fetch(`https://restcountries.com/v3.1/name/${country}`);
-}
+const whereAmIByLocationAsync = async function () {
+  try {
+    // geo location
+    const pos = await getLocation();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    const resGeo = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json&auth=${apiKey}`);
+    const dataGeo = await resGeo.json();
 
+    // get country by country name
+    const countryName = dataGeo.country;
+    const resCountry = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+    if(!resCountry.ok)
+      throw new Error('Country name Error');
+    const dataCountry = await resCountry.json();
+    renderCountries(dataCountry[0]);
+
+    // get neighbour
+    const neighbour = dataCountry[0].borders;
+    const resNeighbour = await fetch(
+      `https://restcountries.com/v3.1/alpha?codes=${neighbour}`);
+    if(resNeighbour.status === 404)
+      throw new Error(`Wrong country name : ${neighbourRes.status}`);
+    if(!resNeighbour.ok)
+      throw new Error(`Country neighbour Error : ${neighbourRes.status}`);
+    const dataNeighbour = await resNeighbour.json();
+    dataNeighbour.forEach(ne => renderCountries(ne, 'neighbour'));
+    return ` 출력 시험 용 ==>  ${dataGeo.country} , ${dataGeo.city}`;
+  } catch (err){
+    console.log(`${err}  🚀🚀🚀🚀🚀`)
+    renderError(err.message);
+    throw err;
+  } finally {
+    countriesContainer.style.opacity = 1;
+  }
+}
 
 btn.addEventListener('click', function () {
   // whereAmIByCity('berlin');
   // whereAmIByLatLng(52.508, 13.381);
   // whereAmIByLatLng(19.037, 72.873);
   // whereAmIByLatLng(-33.933, 18.474);
-  whereAmIByLocation();
+  // whereAmIByLocation();
+  whereAmIByLocationAsync();
 });
+console.log('1: first');
+// const city = whereAmIByLocationAsync()
+// console.log(city)
+// whereAmIByLocationAsync()
+//   .then(city => console.log(city))
+//   .catch(err => console.error(`2: 외부에서 애러 호출 ${err.message}`))
+//   .finally(() => console.log('3: after async'));
 
-
+// 외부에서 애러 처리하는 방식... ???
+(async function(){
+  try{
+    const city = await whereAmIByLocationAsync();
+    console.log(`2번째 : ${city}`)
+  } catch (err) {
+    console.log(`2번째 애러 : ${err.message}`)
+  }
+  console.log('3번째 마지막 ')
+})();
 
 
 
